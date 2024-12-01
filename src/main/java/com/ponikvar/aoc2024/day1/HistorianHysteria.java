@@ -50,8 +50,8 @@ class HistorianHysteria {
   }
 
   private static final class DistanceProcessor implements LineProcessor<Integer> {
-    private final List<Integer> left = new ArrayList<>();
-    private final List<Integer> right = new ArrayList<>();
+    private final List<Integer> left = Lists.newArrayList();
+    private final List<Integer> right = Lists.newArrayList();
 
     @Override
     public boolean processLine(String line) throws IOException {
