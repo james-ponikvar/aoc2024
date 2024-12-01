@@ -1,6 +1,8 @@
 package com.ponikvar.aoc2024.day1;
 
+import com.google.common.base.CharMatcher;
 import com.google.common.base.Charsets;
+import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.io.LineProcessor;
@@ -8,12 +10,10 @@ import com.google.common.io.MoreFiles;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 class HistorianHysteria {
-
-  private static final Pattern LINE_PATTERN = Pattern.compile("^(\\d+)\\s+(\\d+)$");
+  private static final Splitter LINE_SPLITTER =
+      Splitter.on(CharMatcher.whitespace()).trimResults().omitEmptyStrings();
 
   int similarity(Path input) throws IOException {
     return solve(input, new SimilarityProcessor());
@@ -34,11 +34,9 @@ class HistorianHysteria {
 
     @Override
     public boolean processLine(String line) throws IOException {
-      Matcher matcher = LINE_PATTERN.matcher(line);
-      if (matcher.matches()) {
-        left.add(Integer.valueOf(matcher.group(1)));
-        right.compute(Integer.valueOf(matcher.group(2)), (k, v) -> v == null ? 1 : v + 1);
-      }
+      List<Integer> ids = LINE_SPLITTER.splitToStream(line).map(Integer::parseInt).toList();
+      left.add(ids.getFirst());
+      right.compute(ids.getLast(), (k, v) -> v == null ? 1 : v + 1);
       return true;
     }
 
@@ -55,11 +53,9 @@ class HistorianHysteria {
 
     @Override
     public boolean processLine(String line) throws IOException {
-      Matcher matcher = LINE_PATTERN.matcher(line);
-      if (matcher.matches()) {
-        left.add(Integer.valueOf(matcher.group(1)));
-        right.add(Integer.valueOf(matcher.group(2)));
-      }
+      List<Integer> ids = LINE_SPLITTER.splitToStream(line).map(Integer::parseInt).toList();
+      left.add(ids.getFirst());
+      right.add(ids.getLast());
       return true;
     }
 
