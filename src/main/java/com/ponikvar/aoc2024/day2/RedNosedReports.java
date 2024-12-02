@@ -87,8 +87,9 @@ class RedNosedReports {
 
       @Override
       public boolean isSafe(List<Integer> report) {
-        return IntStream.range(0, report.size())
-            .anyMatch(index -> standard.isSafe(slice(report, index)));
+        return standard.isSafe(report)
+            || IntStream.range(0, report.size())
+                .anyMatch(index -> standard.isSafe(slice(report, index)));
       }
     }
 
