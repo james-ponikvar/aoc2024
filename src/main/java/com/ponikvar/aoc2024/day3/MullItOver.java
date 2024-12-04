@@ -38,10 +38,10 @@ class MullItOver {
       int left = 0;
       int right = 0;
 
-      while (left != -1 && right != -1) {
+      while (left > -1 && right > -1) {
         if (enabled) {
           right = line.indexOf("don't()", left);
-          if (right != -1) {
+          if (right > -1) {
             delegate.processLine(line.substring(left, right));
             enabled = false;
           } else {
@@ -49,9 +49,7 @@ class MullItOver {
           }
         } else {
           left = line.indexOf("do()", right);
-          if (left != -1) {
-            enabled = true;
-          }
+          enabled = left > -1;
         }
       }
       return true;
