@@ -30,26 +30,21 @@ class MullItOver {
   }
 
   private static class ConditionalMemoryProcessor implements LineProcessor<Integer> {
-    private final MemoryProcessor delegate = new MemoryProcessor();
+    private static final Pattern PATTERN =
+        Pattern.compile("mul\\((\\d{1,3}),(\\d{1,3})\\)|do\\(\\)|don't\\(\\)");
     private boolean enabled = true;
+    private int sum = 0;
 
     @Override
     public boolean processLine(String line) throws IOException {
-      int left = 0;
-      int right = 0;
-
-      while (left > -1 && right > -1) {
-        if (enabled) {
-          right = line.indexOf("don't()", left);
-          if (right > -1) {
-            delegate.processLine(line.substring(left, right));
-            enabled = false;
-          } else {
-            delegate.processLine(line.substring(left));
-          }
-        } else {
-          left = line.indexOf("do()", right);
-          enabled = left > -1;
+      Matcher matcher = PATTERN.matcher(line);
+      while (matcher.find()) {
+        if (matcher.group().equals("do()")) {
+          enabled = true;
+        } else if (matcher.group().equals("don't()")) {
+          enabled = false;
+        } else if (enabled) {
+          sum += (Integer.parseInt(matcher.group(1)) * Integer.parseInt(matcher.group(2)));
         }
       }
       return true;
@@ -57,13 +52,12 @@ class MullItOver {
 
     @Override
     public Integer getResult() {
-      return delegate.getResult();
+      return sum;
     }
   }
 
   private static class MemoryProcessor implements LineProcessor<Integer> {
     private static final Pattern PATTERN = Pattern.compile("mul\\((\\d{1,3}),(\\d{1,3})\\)");
-
     private int sum = 0;
 
     @Override
